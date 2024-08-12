@@ -2,6 +2,7 @@ import discord
 import requests
 import os
 from dotenv import load_dotenv
+import json
 
 # Загрузка переменных из .env файла
 load_dotenv()
@@ -26,8 +27,49 @@ def send_telegram_message(message, topic):
 
 # Создание экземпляра клиента Discord
 intents = discord.Intents.default()
+intents.message_content = True
 intents.members = True
 client = discord.Client(intents=intents)
+
+# Проверка наличия нужных ролей
+def has_required_role(member):
+    required_roles = ['Бронзовый', 'Серебряный', 'Золотой', 'Платиновый']
+    return any(role.name in required_roles for role in member.roles)
+
+# Формирование JSON файла с участниками
+def save_participant_to_json(member):
+    participant_data = {
+        'discord_id': member.id,
+        'discord_username': member.name,
+        'roles': [role.name for role in member.roles]
+    }
+
+    file_path = 'participants.json'
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+    else:
+        data = []
+
+    data.append(participant_data)
+
+    with open(file_path, 'w') as f:
+        json.dump(data, f, indent=4)
+
+# Обработчик команды /join
+@client.event
+async def on_message(message):
+    if message.content == '/join':
+        member = message.author
+
+        if has_required_role(member):
+            save_participant_to_json(member)
+            await message.channel.send(f'{member.name}, вы успешно зарегистрированы для участия в аукционе!')
+        else:
+            await message.channel.send(
+                f'{member.name}, вы не указали свой логин Discord на портале [linkrt.ru](https://linkrt.ru/change-profile/) '
+                f'в личном профиле. Пожалуйста, добавьте его, чтобы участвовать в аукционе.'
+            )
 
 # Обработчик события присоединения нового пользователя
 @client.event
