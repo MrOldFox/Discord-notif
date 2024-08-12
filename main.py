@@ -36,6 +36,17 @@ def has_required_role(member):
     required_roles = ['Бронзовый', 'Серебряный', 'Золотой', 'Платиновый']
     return any(role.name in required_roles for role in member.roles)
 
+# Проверка, зарегистрирован ли пользователь уже в аукционе
+def is_already_registered(member):
+    file_path = 'participants.json'
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            for participant in data:
+                if participant['discord_id'] == member.id:
+                    return True
+    return False
+
 # Формирование JSON файла с участниками
 def save_participant_to_json(member):
     participant_data = {
@@ -61,6 +72,10 @@ def save_participant_to_json(member):
 async def on_message(message):
     if message.content == '/join':
         member = message.author
+
+        if is_already_registered(member):
+            await message.channel.send(f'{member.name}, вы уже зарегистрированы для участия в аукционе!')
+            return
 
         if has_required_role(member):
             save_participant_to_json(member)
