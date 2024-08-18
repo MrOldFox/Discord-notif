@@ -98,7 +98,7 @@ async def on_member_join(member):
 # Обработчик команды /nick
 @client.event
 async def on_message(message):
-    if message.content == '/nick':
+    if message.content == '/name':
         member = message.author
         discord_username = member.name + "#" + member.discriminator
 
