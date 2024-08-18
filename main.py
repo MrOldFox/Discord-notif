@@ -98,15 +98,21 @@ async def on_member_join(member):
 # Обработчик команды /nick
 @client.event
 async def on_message(message):
-    if message.content == '/name':
+    if message.content == '/nick':
         member = message.author
         discord_username = member.name
 
-        await message.channel.send(
+        # Отправляем сообщение и сохраняем его для последующего удаления
+        bot_message = await message.channel.send(
             f"Ваш уникальный ник в Discord: **{discord_username}**\n\n"
             f"Необходимо указать этот никнейм в вашем личном профиле на сайте [linkrt.ru](https://linkrt.ru/change-profile/), "
             f"чтобы интегрировать вашу учетную запись и получить доступ к наградам и возможностям нашего сообщества."
         )
+
+        # Удаляем сообщение пользователя через 5 минут (300 секунд)
+        await message.delete(delay=10)
+        # Удаляем сообщение бота через 5 минут (300 секунд)
+        await bot_message.delete(delay=10)
 
 # Запуск бота
 client.run(DISCORD_TOKEN)
