@@ -100,7 +100,7 @@ async def on_member_join(member):
 async def on_message(message):
     if message.content == '/name':
         member = message.author
-        discord_username = member.name + "#" + member.discriminator
+        discord_username = member.name
 
         await message.channel.send(
             f"Ваш уникальный ник в Discord: **{discord_username}**\n\n"
