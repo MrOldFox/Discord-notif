@@ -110,9 +110,9 @@ async def on_message(message):
         )
 
         # Удаляем сообщение пользователя через 5 минут (300 секунд)
-        await message.delete(delay=10)
+        await message.delete(delay=300)
         # Удаляем сообщение бота через 5 минут (300 секунд)
-        await bot_message.delete(delay=10)
+        await bot_message.delete(delay=300)
 
 # Запуск бота
 client.run(DISCORD_TOKEN)
