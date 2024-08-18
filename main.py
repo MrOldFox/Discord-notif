@@ -94,5 +94,19 @@ async def on_member_join(member):
                 f"[Присоединиться к нашему Discord]({DISCORD_LINK})")
     send_telegram_message(message, TELEGRAM_TOPIC)
 
+
+# Обработчик команды /nick
+@client.event
+async def on_message(message):
+    if message.content == '/nick':
+        member = message.author
+        discord_username = member.name + "#" + member.discriminator
+
+        await message.channel.send(
+            f"Ваш уникальный ник в Discord: **{discord_username}**\n\n"
+            f"Необходимо указать этот никнейм в вашем личном профиле на сайте [linkrt.ru](https://linkrt.ru/change-profile/), "
+            f"чтобы интегрировать вашу учетную запись и получить доступ к наградам и возможностям нашего сообщества."
+        )
+
 # Запуск бота
 client.run(DISCORD_TOKEN)
