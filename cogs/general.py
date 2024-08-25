@@ -1,4 +1,5 @@
 # cogs/general.py
+import discord
 from discord.ext import commands
 import asyncio  # Для работы с задержкой
 from utils.helpers import manage_participants, has_required_role
